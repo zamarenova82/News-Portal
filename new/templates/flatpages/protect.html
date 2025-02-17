@@ -1,0 +1,12 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h5>Страница авторизованного пользователя {{request.user.username}}</h5>
+<div> Здесь может содержаться персональная информация для каждого пользователя </div>
+
+{% if is_not_author %}
+<button> <a href="/posts/upgrade/"> Хочу Author!</a> </button>
+{% endif %}
+<button> <a href="/posts/">Продолжить</a> </button>
+
+{% endblock %}

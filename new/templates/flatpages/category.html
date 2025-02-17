@@ -1,0 +1,91 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+    {% if is_not_subscriber %}
+        <p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sn">Подписаться</a> </p>
+    {% endif %}
+   <h1>Все посты</h1>
+<!-- А вот так мы используем наш тег-->
+   <h3>{% current_time '%b %d %Y' %}</h3>
+<!-- Если в переменной next_sale будет None,
+   то выведется указанный в фильтре текст -->
+    <h3> {{ next_sale|default_if_none:"Всего постов:" }} </h3>
+   <h3> {{ posts|length}} </h3>
+{# Добавляем форму, которая объединяет набор полей, которые будут отправляться в запросе #}
+   <form action="" method="get">
+       {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
+       {{ filterset.form.as_p }}
+       {# Добавим кнопку отправки данных формы #}
+       <input type="submit" value="Найти" />
+   </form>
+   <hr>
+   {% if category_new_lists %}
+       <table>
+           <tr>
+               <td>Название</td>
+               <td>Содержание</td>
+               <td>Тип</td>
+               <td>Категория</td>
+               <td>Автор</td>
+               <td>Дата публикации</td>
+           </tr>
+
+           <!-- Для каждого поста будете генерироваться новая строчка,
+           т.е. новый HTML код, который указан в теле цикла.
+           При этом сам цикл работает точно так же, как и в Python.
+           post — переменная цикла, т.е. наш пост полученный из списка -->
+           {% for post in category_new_lists %}
+           <tr>
+               <!-- Не забываем, что переменные в шаблоне ничем не отличаются
+                от переменных в Python. Здесь также можно получать доступ к
+                полям объекта модели. Например, здесь мы выводим имя,
+                в следующем столбце описание, и т.д.  -->
+               <td>{{ post.title|censor }}</td>
+               <td>{{ post.content|censor|truncatewords:3 }}</td>
+               <td>{{ post.type }}</td>
+               <td>
+                   {% for cat in post.category.all %}
+                        <a href="{% url 'category_list' cat.id %}"> {{ cat }}</a>
+                   {% endfor %}
+               </td>
+               <td>{{ post.author.user }}</td>
+               <td>{{ post.time_in|date:"d-m-Y H:i" }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>Постов нет!</h2>
+   {% endif %}
+
+    {# Добавляем пагинацию на страницу #}
+
+   {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% endblock content %}
