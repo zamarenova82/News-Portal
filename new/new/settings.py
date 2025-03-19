@@ -99,13 +99,16 @@ LOGIN_REDIRECT_URL = '/posts/protect/'
 
 WSGI_APPLICATION = 'new.wsgi.application'
 
-#xbsdatwuhzxjinwa
+#ydzkovcmobjbbuvu
 EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
-EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
-EMAIL_HOST_USER = 'nodaav'
-EMAIL_HOST_PASSWORD = 'xbsdatwuhzxjinwa'  # пароль от почты
-EMAIL_USE_SSL = True
-DEFAULT_FROM_EMAIL = 'nodaav@yandex.ru'
+EMAIL_PORT = 587  # порт smtp сервера тоже одинаковый
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tzamarenova82@yandex.ru'
+EMAIL_HOST_PASSWORD = 'ydzkovcmobjbbuvu'  # пароль от почты
+
+EMAIL_SERVER = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_ADMIN = EMAIL_HOST_USER
 
 ACCOUNT_EMAIL_REQUIRED = True # email обязательный
 ACCOUNT_UNIQUE_EMAIL = True # email уникальный
